@@ -1,80 +1,55 @@
-function uno(axilas, cantSesiones){
-    let resultado = axilas * cantSesiones;
-    return resultado;
-}
+let productos = [
+    {nombre: "Axilas", precio:500},
+    {nombre: "Espalda", precio:1500},
+    {nombre: "Piernas completas", precio:2500},
+    {nombre: "Media pierna", precio:1700},
+    {nombre: "Abdomen", precio:1000},
+    {nombre: "Rostro completo", precio:1500},
+];
 
-function dos(piernas, cantSesiones){
-    let resultado = piernas * cantSesiones;
-    return resultado;
-}
+function mensajeInicial (){
+    let mensaje = "Hola! De qué zona te gustaría comprar sesiones de depilación?";
+    let count = 1;
 
-function tres(abdomen, cantSesiones){
-    let resultado = abdomen * cantSesiones;
-    return resultado;
-}
-
-function cuatro(rostro, cantSesiones){
-    let resultado = rostro * cantSesiones;
-    return resultado;
-}
-
-function mostrarResultado(resultado) {
-    alert ("El total a abonar es: $" + resultado);
-}
-
-function mostrarMenu(){
-    let opcion = prompt(
-        "Seleccione la zona a depilar (ESC para salir) \n 1.Axilas $500 \n 2.Piernas $2000 \n 3.Abdomen $1000 \n 4.Rostro $1500"
-    );
-    return opcion;
-}
-
-function depilacion() {
-    let opcionSeleccionada = mostrarMenu();
-    while (opcionSeleccionada !== "ESC") {
-        if (opcionSeleccionada !== "") {
-            opcionSeleccionada = parseInt(opcionSeleccionada);
-
-            if (!isNaN(opcionSeleccionada)){
-                let cantSesiones = parseInt(prompt("Ingrese la cantidad de sesiones a realizar"));
-                let axilas = 500;
-                let piernas = 2000;
-                let abdomen = 1000;
-                let rostro = 1500;
-
-                switch (opcionSeleccionada) {
-                    case 1:
-                        let resultadoUno = uno(axilas, cantSesiones);
-                        mostrarResultado(resultadoUno);
-                        break;
-
-                    case 2:
-                        let resultadoDos = dos(piernas, cantSesiones);
-                        mostrarResultado(resultadoDos);
-                        break;
-
-                    case 3:
-                        let resultadoTres = tres(abdomen, cantSesiones);
-                        mostrarResultado(resultadoTres);
-                        break;
-
-                    case 4:
-                        let resultadoCuatro = cuatro(rostro, cantSesiones);
-                        mostrarResultado(resultadoCuatro);
-                        break;
-
-                    default:
-                        alert("Opción incorrecta");
-                        break;
-                }
-            } else{
-                alert("Ingresó datos incorrectos");
-            }
-        } else{
-            alert("Seleccione una opción");
-        }
-        opcionSeleccionada = mostrarMenu();
+    for(let producto of productos){
+        mensaje += `\n${count}- ${producto.nombre} - $ ${producto.precio}`
+        count ++
     }
+
+    mensaje += `\n${count}- Salir`
+    return mensaje
 }
 
-depilacion();
+function unidades (producto){
+    return prompt(`¿Cuántas sesiones de ${producto.nombre} desea comprar?`)
+}
+
+function subtotal (unidades, producto){
+    alert(`Se agregaron a tu carrito ${unidades} sesiones de ${producto.nombre} por $ ${unidades * producto.precio}`)
+    return unidades * producto.precio
+}
+
+function calcularTotal (arr){
+    return arr.reduce((acc, el) => acc + el, 0)
+}
+
+let opcion = 0
+let total = []
+let carrito = []
+
+do {
+    opcion = parseInt(prompt(mensajeInicial()))
+
+    if (opcion === productos.length + 1){
+        alert (`Su total fue de $ ${calcularTotal(total)}. \nGracias por su visita.`)
+        console.log (carrito)
+        break;
+    }
+
+    let productoActual = productos[opcion - 1]
+    let cantidad = subtotal(unidades(productos[opcion - 1]), productoActual)
+
+    carrito.push({productoActual})
+    total.push(cantidad)
+
+} while (true)
