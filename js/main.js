@@ -1,26 +1,53 @@
-let productos = [
-    {nombre: "Axilas", precio:500},
-    {nombre: "Espalda", precio:1500},
-    {nombre: "Piernas completas", precio:2500},
-    {nombre: "Media pierna", precio:1700},
-    {nombre: "Abdomen", precio:1000},
-    {nombre: "Rostro completo", precio:1500},
-];
+class Producto{
+    constructor(nombre, precio){
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+    getNombre(){
+        return this.nombre;
+    }
+    getPrecio(){
+        return this.precio;
+    }
+    getCantidad(){
+        return this.cantidad;
+    }
+    setNombre(nombre){
+        this.nombre = nombre;
+    }
+    setPrecio(precio){
+        this.precio = precio;
+    }
+    setCantidad(cantidad){
+        this.cantidad = cantidad;
+    }
+    calcularSubtotal(){
+        alert("Se agregaron " + this.cantidad + " sesiones de " + this.nombre + " al carrito");
+        return this.precio * this.cantidad;
+    }
+}
+
+const productos = [
+    new Producto("Axilas", 500),
+    new Producto("Espalda", 1500),
+    new Producto("Piernas completas", 2500),
+    new Producto("Media pierna", 1700),
+    new Producto("Abdomen", 1000),
+    new Producto("Rostro completo", 1500),
+]
 
 function mensajeInicial (){
     let mensaje = "Hola! De qué zona te gustaría comprar sesiones de depilación?";
-    let count = 1;
 
-    for(let producto of productos){
-        mensaje += `\n${count}- ${producto.nombre} - $ ${producto.precio}`
-        count ++
+    for(let i=1; i<=productos.length; i++){
+        mensaje += `\n${i}- ${productos[i-1].nombre} - $ ${productos[i-1].precio}`
     }
 
-    mensaje += `\n${count}- Salir`
+    mensaje += `\n${productos.length+1}- Salir`
     return mensaje
 }
 
-function unidades (producto){
+function pedirUnidades (producto){
     return prompt(`¿Cuántas sesiones de ${producto.nombre} desea comprar?`)
 }
 
@@ -33,23 +60,22 @@ function calcularTotal (arr){
     return arr.reduce((acc, el) => acc + el, 0)
 }
 
-let opcion = 0
 let total = []
 let carrito = []
 
-do {
-    opcion = parseInt(prompt(mensajeInicial()))
-
-    if (opcion === productos.length + 1){
-        alert (`Su total fue de $ ${calcularTotal(total)}. \nGracias por su visita.`)
-        console.log (carrito)
-        break;
-    }
-
+let opcion = parseInt(prompt(mensajeInicial()))
+while (opcion != productos.length + 1){
+    
     let productoActual = productos[opcion - 1]
-    let cantidad = subtotal(unidades(productos[opcion - 1]), productoActual)
-
-    carrito.push({productoActual})
+    let unidades = pedirUnidades(productoActual)
+    productoActual.setCantidad(unidades)
+    let cantidad = productoActual.calcularSubtotal();
+    
+    carrito.push({"producto": productoActual, "cantidad": unidades})
+    console.log("Carrito: ", carrito)
     total.push(cantidad)
+    opcion = parseInt(prompt(mensajeInicial()))
+} 
 
-} while (true)
+alert (`Su total fue de $ ${calcularTotal(total)}. \nGracias por su visita.`)
+console.log (carrito)
