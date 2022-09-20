@@ -1,81 +1,90 @@
-class Producto{
-    constructor(nombre, precio){
+class producto{
+    constructor (id, nombre, tipo, precio, stock, img){
+        this.id = id;
         this.nombre = nombre;
+        this.tipo = tipo
         this.precio = precio;
-    }
-    getNombre(){
-        return this.nombre;
-    }
-    getPrecio(){
-        return this.precio;
-    }
-    getCantidad(){
-        return this.cantidad;
-    }
-    setNombre(nombre){
-        this.nombre = nombre;
-    }
-    setPrecio(precio){
-        this.precio = precio;
-    }
-    setCantidad(cantidad){
-        this.cantidad = cantidad;
-    }
-    calcularSubtotal(){
-        alert("Se agregaron " + this.cantidad + " sesiones de " + this.nombre + " al carrito");
-        return this.precio * this.cantidad;
+        this.stock = stock;
+        this.img = img;
     }
 }
 
 const productos = [
-    new Producto("Axilas", 500),
-    new Producto("Espalda", 1500),
-    new Producto("Piernas completas", 2500),
-    new Producto("Media pierna", 1700),
-    new Producto("Abdomen", 1000),
-    new Producto("Rostro completo", 1500),
+    lemonPie = new producto(1, "Lemon Pie", "Tarteleta", 700, 10, "./images/lemonpie.jpg"),
+    cremeBrulee = new producto(2, "Creme Brulee", "Tarteleta", 700, 10, "./images/cremebrulee.jpg"),
+    cremeDeCoco = new producto(3, "Creme de Coco", "Tarteleta", 700, 10, "./images/cremedecoco.jpg"),
+    crumbleManzana = new producto(4, "Crumble de Manzana", "Tarteleta", 700, 10, "./images/crumblemanzana.jpg"),
+    perasYChocolate = new producto(5, "Peras y Chocolate", "Tarteleta", 700, 10, "./images/peras.jpg"),
+    frutosRojos = new producto(6, "Frutos Rojos", "Tarteleta", 700, 10, "./images/frutosrojos.jpg"),
+    nuecesYDDL = new producto(7, "Nueces y Dulce de Leche", "Tarteleta", 700, 10, "./images/nuecesddl.jpg"),
+    chocolatePasion = new producto(8, "Chocolate Pasión", "Tarteleta", 700, 10, "./images/chocolate.jpg"),
+    bombonesDDL = new producto(11, "Bombones de Dulce de Leche", "Bombones", 600, 10, "./images/bombones.jpg"),
+    mentitas = new producto(12, "Mentitas", "Bombones", 600, 10, "./images/mentitas.jpg"),
 ]
 
-function mensajeInicial (){
-    let mensaje = "Hola! De qué zona te gustaría comprar sesiones de depilación?";
+const cards = document.getElementById("cards");
 
-    for(let i=1; i<=productos.length; i++){
-        mensaje += `\n${i}- ${productos[i-1].nombre} - $ ${productos[i-1].precio}`
-    }
+const carrito = []
 
-    mensaje += `\n${productos.length+1}- Salir`
-    return mensaje
+for (const producto of productos) {
+    let column = document.createElement("div");
+    column.className = "col-md-4 mt-3 ";
+    column.id = `columna-${producto.id}`;
+    column.innerHTML = `
+        <div class="card">
+            <div class="card-body">
+            <img class="w-50" src= "${producto.img}" alt="producto">
+            <p class="card-text"><b>${producto.nombre}</b></p>
+            <p class="card-text">Tipo: <b>${producto.tipo}</b></p>
+            <p class="card-text">Precio: <b>${producto.precio}</b></p>
+            <div class="card-footer">
+                    <button onclick="guardarEnCarrito(${producto.id})" class="btn btn-primary" id="agregar-${producto.id}" >Agregar al carrito</button>
+                </div>
+            </div>
+        </div>`;
+  
+    cards.append(column);
+
+    // let botonAgregar = document.getElementById(`agregar-${producto.id}`);
+    // botonAgregar.onclick = () => guardarEnCarrito(producto.Id);
+  }
+
+  function guardarEnCarrito(comidaId){
+    let item = productos.find((comida) => comida.id === comidaId)
+    carrito.push(item)
+    console.log (carrito)
+    renderCarrito()
+    calcularTotal()
 }
 
-function pedirUnidades (producto){
-    return prompt(`¿Cuántas sesiones de ${producto.nombre} desea comprar?`)
+const contenedor = document.getElementById("carrito");
+
+const renderCarrito = () => {
+    contenedor.innerHTML = ""
+    carrito.forEach((item) => {
+        let div = document.createElement("div")
+        div.className = "col-md-4 mt-3 ";
+        div.id = `columna-${item.id}`;
+        div.innerHTML = `
+        <div class="card">
+            <div class="card-body">
+            <img class="w-50" src= "${item.img}" alt="producto">
+            <p class="card-text"><b>${item.nombre}</b></p>
+            <p class="card-text">Tipo: <b>${item.tipo}</b></p>
+            <p class="card-text">Precio: <b>${item.precio}</b></p>
+        </div>`;
+
+        contenedor.append(div);
+    })
 }
 
-function subtotal (unidades, producto){
-    alert(`Se agregaron a tu carrito ${unidades} sesiones de ${producto.nombre} por $ ${unidades * producto.precio}`)
-    return unidades * producto.precio
+const divPrecio = document.getElementById("precioTotal"); 
+
+calcularTotal = () => {
+    let cont = 0
+    carrito.forEach((pre) => {
+        cont += pre.precio
+    })
+
+    divPrecio.innerHTML = cont
 }
-
-function calcularTotal (arr){
-    return arr.reduce((acc, el) => acc + el, 0)
-}
-
-let total = []
-let carrito = []
-
-let opcion = parseInt(prompt(mensajeInicial()))
-while (opcion != productos.length + 1){
-    
-    let productoActual = productos[opcion - 1]
-    let unidades = pedirUnidades(productoActual)
-    productoActual.setCantidad(unidades)
-    let cantidad = productoActual.calcularSubtotal();
-    
-    carrito.push({"producto": productoActual, "cantidad": unidades})
-    console.log("Carrito: ", carrito)
-    total.push(cantidad)
-    opcion = parseInt(prompt(mensajeInicial()))
-} 
-
-alert (`Su total fue de $ ${calcularTotal(total)}. \nGracias por su visita.`)
-console.log (carrito)
