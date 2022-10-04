@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/******* GENERAL ********/
+
+html {
+    font-size: 62.5%;
+}
+
+a {
+    text-decoration: none;
+}
+
+/******* HEADER ********/
+
+header {
+    background-color: rgb(149, 59, 59);
+    width: 100%;
+    height: max-content;
+}
+
+#contHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: white;
+    font-size: 40px;
+    display: inline;
+}
