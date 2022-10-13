@@ -1,76 +1,69 @@
-class Producto{
-    constructor (id, nombre, tipo, precio, stock, img){
-        this.id = id;
-        this.nombre = nombre.toUpperCase();
-        this.tipo = tipo
-        this.precio = parseFloat(precio);
-        this.stock = stock;
-        this.img = img;
-    }
-}
-
-const lemonPie = new Producto(1, "Lemon Pie", "Tarteleta", 700, 10, "./images/lemonpie.jpg")
-const cremeBrulee = new Producto(2, "Creme Brulee", "Tarteleta", 700, 10, "./images/cremebrulee.jpg")
-const cremeDeCoco = new Producto(3, "Creme de Coco", "Tarteleta", 700, 10, "./images/cremedecoco.jpg")
-const crumbleManzana = new Producto(4, "Crumble de Manzana", "Tarteleta", 700, 10, "./images/crumblemanzana.jpg")
-const perasYChocolate = new Producto(5, "Peras y Chocolate", "Tarteleta", 700, 10, "./images/peras.jpg")
-const frutosRojos = new Producto(6, "Frutos Rojos", "Tarteleta", 700, 10, "./images/frutosrojos.jpg")
-const nuecesYDDL = new Producto(7, "Nueces y Dulce de Leche", "Tarteleta", 700, 10, "./images/nuecesddl.jpg")
-const chocolatePasion = new Producto(8, "Chocolate Pasión", "Tarteleta", 700, 10, "./images/chocolate.jpg")
-const bombonesDDL = new Producto(11, "Bombones de Dulce de Leche", "Bombones", 600, 10, "./images/bombones.jpg")
-const mentitas = new Producto(12, "Mentitas", "Bombones", 600, 10, "./images/mentitas.jpg")
-
-const productos = []
-
-productos.push(lemonPie, cremeBrulee, cremeDeCoco, crumbleManzana, perasYChocolate, frutosRojos, nuecesYDDL, chocolatePasion, bombonesDDL, mentitas)
-
 const cards = document.getElementById("cards");
 
+let productos = []
 let carrito = []
 
-function mostrarProductos(productos) {
+function mostrarProductos(prd) {
     cards.innerHTML= ""
-    productos.forEach(Producto => {
+    prd.forEach(prod => {
         let column = document.createElement("div");
         column.className = "col-md-4 mt-3 ";
-        column.id = `columna-${Producto.id}`;
+        column.id = `columna-${prod.id}`;
         column.innerHTML = `
             <div class="card">
                 <div class="card-body">
-                <img class="w-50" src= "${Producto.img}" alt="producto">
-                <p class="card-text"><b>${Producto.nombre}</b></p>
-                <p class="card-text">Tipo: <b>${Producto.tipo}</b></p>
-                <p class="card-text">Precio: <b>${Producto.precio}</b></p>
-                <div class="card-footer">
-                        <button onclick="guardarEnCarrito(${Producto.id})" class="btn btn-primary" id="agregar-${Producto.id}" >Agregar al carrito</button>
-                    </div>
+                    <img class="w-50" src= "${prod.img}" alt="producto">
+                    <p class="card-text"><b>${prod.nombre}</b></p>
+                    <p class="card-text">Tipo: <b>${prod.tipo}</b></p>
+                    <p class="card-text">Precio: <b>${prod.precio}</b></p>
                 </div>
             </div>`;
     
         cards.append(column);
+
+        let btnComprar = document.createElement('button');
+        btnComprar.className = "btn btn-primary";
+        btnComprar.textContent = ('Agregar');
+        btnComprar.setAttribute('prodID', prod.id);
+        cards.append(btnComprar)
+        btnComprar.onclick = guardarEnCarrito;
     });
 }
 
 //// Carrito de compras ////
 
-function guardarEnCarrito(comidaId){
-    let item = productos.find((comida) => comida.id === comidaId)
+async function guardarEnCarrito(comidaId){
+    let productos = await traerProductos();
+    let item = productos.filter(prd => prd.id == comidaId.target.getAttribute('prodID'));
     mostrarToast(item);
-    carrito.push(item)
-    console.log (carrito)
-    guardarCarritoEnLocalStorage()
+    carrito.push(comidaId.target.getAttribute('prodID'))
     renderCarrito()
-    calcularTotal()
+    guardarCarritoEnLocalStorage()
+}
+
+//// Mostrar Toast ////
+
+function mostrarToast(miItem, toastAgregar) {
+    Toastify({
+        text: `PRODUCTO AGREGADO:
+                ${miItem[0].nombre}`,
+        duration: 2000,
+        className: "toastAgregar",
+        offset: {
+            y: 80
+        },
+    }).showToast();
 }
 
 const contenedor = document.getElementById("carrito");
 
-function renderCarrito() {
+async function renderCarrito() {
+    let productos = await traerProductos();
     contenedor.innerHTML = ""
     let carritoSinDuplicados = [...new Set(carrito)];
     carritoSinDuplicados.forEach((item) => {
         const miItem = productos.filter((prod) => {
-            return prod.idprod === parseInt(item);
+            return prod.id === parseInt(item);
         });
         const unidadesProd = carrito.reduce((total, itemId) => {
             return itemId === item ? total += 1 : total;
@@ -78,43 +71,39 @@ function renderCarrito() {
 
         let div = document.createElement("div")
         div.className = "col-md-4 mt-3 ";
-        div.id = `columna-${item.id}`;
+        div.id = `columna-${miItem[0].id}`;
         div.innerHTML = `
         <div class="card">
             <div class="card-body">
-            <img class="w-50" src= "${item.img}" alt="producto">
-            <p class="card-text"><b>${item.nombre}</b></p>
-            <p class="card-text">Tipo: <b>${item.tipo}</b></p>
+            <img class="w-50" src= "${miItem[0].img}" alt="producto">
+            <p class="card-text"><b>${miItem[0].nombre}</b></p>
+            <p class="card-text">Tipo: <b>${miItem[0].tipo}</b></p>
             <p class="card-text">Cantidad: <b>${unidadesProd}</b></p>
-            <p class="card-text">Precio: <b>${item.precio}</b></p>
+            <p class="card-text">Precio: <b>${miItem[0].precio}</b></p>
         </div>
-        <button onclick="eliminarItem(${item.id})" class="btn btn-primary">Eliminar</button>`;
+        <button onclick="eliminarItem(${miItem[0].id})" class="btn btn-primary">Eliminar</button>`;
 
         contenedor.append(div);
     })
+
+    const divPrecio = document.getElementById("precioTotal");
+    const Total =
+        carrito.reduce((total, item) => {
+            const miItem = productos.filter((items) => {
+                return items.id === parseInt(item);
+            });
+            return total + miItem[0].precio;
+        }, 0);
+
+        divPrecio.innerHTML = Total
 }
 
 const eliminarItem = (id) => {
     let borrar = carrito.find((comida) => comida.id === id)
     let indice = carrito.indexOf(borrar)
     carrito.splice(indice, 1)
-    guardarCarritoEnLocalStorage()
     renderCarrito()
-    calcularTotal()
-}
-
-//// Mostrar Toast ////
-
-function mostrarToast(item) {
-    Toastify({
-        text: `PRODUCTO AGREGADO:
-                ${item.nombre}`,
-        duration: 2000,
-        className: "toastAgregar",
-        offset: {
-            y: 80
-        },
-    }).showToast();
+    guardarCarritoEnLocalStorage()
 }
 
 //// Local Storage ////
@@ -132,23 +121,9 @@ function cargarCarritoDeLocalStorage() {
     }
 }
 
-//// Calculo del total ////
-
-const divPrecio = document.getElementById("precioTotal"); 
-
-function calcularTotal () {
-    let cont = 0
-    carrito.forEach((pre) => {
-        cont += pre.precio
-    })
-
-    divPrecio.innerHTML = cont
-}
-
 function main(){
-    mostrarProductos(productos)
+    traerYmostrarProductos()
     cargarCarritoDeLocalStorage()
-    calcularTotal ()
 }
 
 main();

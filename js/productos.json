@@ -1,0 +1,82 @@
+[
+    {
+        "id": 1,
+        "nombre": "Lemon Pie",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/lemonpie.jpg"
+    },
+    {
+        "id": 2,
+        "nombre": "Creme Brulee",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/cremebrulee.jpg"
+    },
+    {
+        "id": 3,
+        "nombre": "Creme de Coco",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/cremedecoco.jpg"
+    },
+    {
+        "id": 4,
+        "nombre": "Crumble de Manzana",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/crumblemanzana.jpg"
+    },
+    {
+        "id": 5,
+        "nombre": "Peras y Chocolate",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/peras.jpg"
+    },
+    {
+        "id": 6,
+        "nombre": "Frutos Rojos",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/frutosrojos.jpg"
+    },
+    {
+        "id": 7,
+        "nombre": "Nueces y Dulce de Leche",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/nuecesddl.jpg"
+    },
+    {
+        "id": 8,
+        "nombre": "Chocolate Pasión",
+        "tipo": "Tarteleta",
+        "precio": 700,
+        "stock": 10,
+        "img": "./images/chocolate.jpg"
+    },
+    {
+        "id": 9,
+        "nombre": "Bombones de Dulce de Leche",
+        "tipo": "Bombones",
+        "precio": 600,
+        "stock": 10,
+        "img": "./images/bombones.jpg"
+    },
+    {
+        "id": 10,
+        "nombre": "Mentitas",
+        "tipo": "Bombones",
+        "precio": 600,
+        "stock": 10,
+        "img": "./images/mentitas.jpg"
+    }
+]
