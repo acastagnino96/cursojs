@@ -1,4 +1,5 @@
 const cards = document.getElementById("cards");
+const contadorCarrito = document.getElementById("contador");
 
 let productos = []
 let carrito = []
@@ -17,13 +18,15 @@ function mostrarProductos(prd) {
                     <p class="card-text">Tipo: <b>${prod.tipo}</b></p>
                     <p class="card-text">Precio: <b>${prod.precio}</b></p>
                 </div>
-            </div>`;
+            </div>`
+            
+            ;
     
         cards.append(column);
 
         let btnComprar = document.createElement('button');
-        btnComprar.className = "btn btn-primary";
-        btnComprar.textContent = ('Agregar');
+        btnComprar.className = "btn btn-primary botonmas";
+        btnComprar.textContent = ('+');
         btnComprar.setAttribute('prodID', prod.id);
         cards.append(btnComprar)
         btnComprar.onclick = guardarEnCarrito;
@@ -55,7 +58,7 @@ function mostrarToast(miItem, toastAgregar) {
     }).showToast();
 }
 
-const contenedor = document.getElementById("carrito");
+const contenedor = document.getElementsByClassName("cart-content")[0];
 
 async function renderCarrito() {
     let productos = await traerProductos();
@@ -86,7 +89,9 @@ async function renderCarrito() {
         contenedor.append(div);
     })
 
-    const divPrecio = document.getElementById("precioTotal");
+    actualizarContadorCarrito();
+
+    const divPrecio = document.getElementsByClassName("total-price")[0];
     const Total =
         carrito.reduce((total, item) => {
             const miItem = productos.filter((items) => {
@@ -106,6 +111,12 @@ const eliminarItem = (id) => {
     guardarCarritoEnLocalStorage()
 }
 
+//// Actualizar contador ////
+
+function actualizarContadorCarrito() {
+    contadorCarrito.textContent = carrito.length;
+}
+
 //// Local Storage ////
 
 function guardarCarritoEnLocalStorage() {
@@ -120,6 +131,71 @@ function cargarCarritoDeLocalStorage() {
         renderCarrito();
     }
 }
+
+//// Local Storage ////
+
+const btnFinalizar = document.getElementsByClassName("btn-buy")[0];
+btnFinalizar.onclick = buyButtonClicked;
+
+//// Botón Fin Compra ////
+
+async function buyButtonClicked() {
+    let productos = await traerProductos();
+    const productos1 = JSON.parse(localStorage.getItem('carrito') || '[]');
+    if (productos1.length == 0) {
+        Swal.fire({
+            title: 'El carrito está vacío',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+        });
+    } else {
+        Swal.fire({
+            title: 'Tu compra ha sido realizada.',
+            text: 'Gracias por confiar en nosotros.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+        });
+
+        for (let i = productos1.length; i > 0; i--) {
+            productos1.pop();
+        }
+
+        let cartContent = document.getElementsByClassName('cart-content')[0];
+        while (cartContent.hasChildNodes()) {
+            cartContent.removeChild(cartContent.firstChild);
+        }
+        localStorage.setItem('carrito', JSON.stringify(productos1));
+        actualizarContadorCarrito();
+        cargarCarritoDeLocalStorage();
+    }
+}
+
+/// Filtros ///
+
+let btnTodos = document.getElementById("btn-todos");
+let btnTarteleta = document.getElementById("btn-tarteletas");
+let btnBombones = document.getElementById("btn-bombones");
+
+btnTodos.addEventListener('click', async () => {
+    let productos = await traerProductos();
+    traerYmostrarProductos()
+});
+
+btnTarteleta.addEventListener('click', async () => {
+    let productos = await traerProductos();
+    let prodFiltrados = productos.filter(elemento => elemento.tipo == "Tarteleta");
+           
+    mostrarProductos(prodFiltrados)
+});
+
+btnBombones.addEventListener('click', async () => {
+    let productos = await traerProductos();
+    prodFiltrados = productos.filter(elemento => elemento.tipo == "Bombones");
+           
+    mostrarProductos(prodFiltrados)
+});
+
+/// Funcion main ///
 
 function main(){
     traerYmostrarProductos()

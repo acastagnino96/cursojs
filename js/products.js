@@ -32,3 +32,18 @@ async function traerYmostrarProductos() {
     let productos = await traerProductos()
     mostrarProductos(productos)
 }
+
+//// Cart ////
+let cartIcon = document.querySelector("#cart-icon");
+let cart = document.querySelector(".cart");
+let closeCart = document.querySelector("#close-cart");
+
+//// Abrir cart ////
+cartIcon.onclick = () => {
+  cart.classList.add("active");
+};
+
+//// Cerrar cart ////
+closeCart.onclick = () => {
+  cart.classList.remove("active");
+};
